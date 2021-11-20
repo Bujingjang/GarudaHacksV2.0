@@ -23790,8 +23790,8 @@ a.u-link.u-hover-palette-4-light-3:hover {
 }
 .u-button-style.u-palette-4-base,
 .u-button-style.u-palette-4-base[class*="u-border-"] {
-  color: #ffffff !important;
-  background-color: #2cccc4 !important;
+  color: #ffffff;
+  background-color: #2cccc4;
 }
 .u-button-style.u-palette-4-base:hover,
 .u-button-style.u-palette-4-base[class*="u-border-"]:hover,
@@ -23826,11 +23826,11 @@ a.u-button-style.u-button-style.active > .u-active-palette-4-base,
 a.u-button-style.u-button-style.active > .u-active-palette-4-base[class*="u-border-"],
 li.active > a.u-button-style.u-button-style.u-active-palette-4-base,
 li.active > a.u-button-style.u-button-style.u-active-palette-4-base[class*="u-border-"] {
-  color: #ffffff !important;
-  background-color: #2cccc4 !important;
+  color: #ffffff;
+  background-color: #2cccc4;
 }
 a.u-link.u-hover-palette-4-base:hover {
-  color: #2cccc4 !important;
+  color: #2cccc4;
 }
 .u-palette-5-dark-3,
 .u-body.u-palette-5-dark-3,
@@ -23842,7 +23842,7 @@ a.u-link.u-hover-palette-4-base:hover {
 }
 .u-button-style.u-palette-5-dark-3,
 .u-button-style.u-palette-5-dark-3[class*="u-border-"] {
-  color: #ffffff !important;
+  color: #ffffff;
   background-color: #292d33 !important;
 }
 .u-button-style.u-palette-5-dark-3:hover,
@@ -31131,15 +31131,15 @@ a.u-button-style.u-button-style.active > .u-text-active-color-5-base[class*="u-b
   fill: #b9c1cc;
 }
 .u-link.u-text-color-5-base:hover {
-  color: #a2adbc !important;
+  color: #a2adbc;
 }
 a.u-link.u-text-hover-color-5-base:hover {
-  color: #b9c1cc !important;
+  color: #b9c1cc;
 }
 .u-text-palette-1-dark-3,
 a.u-button-style.u-text-palette-1-dark-3,
 a.u-button-style.u-text-palette-1-dark-3[class*="u-border-"] {
-  color: #292e33 !important;
+  color: #292e33;
 }
 a.u-button-style.u-text-palette-1-dark-3:hover,
 a.u-button-style.u-text-palette-1-dark-3[class*="u-border-"]:hover,
@@ -31149,7 +31149,7 @@ a.u-button-style.u-button-style.u-text-palette-1-dark-3:active,
 a.u-button-style.u-button-style.u-text-palette-1-dark-3[class*="u-border-"]:active,
 a.u-button-style.u-button-style.u-text-palette-1-dark-3.active,
 a.u-button-style.u-button-style.u-text-palette-1-dark-3[class*="u-border-"].active {
-  color: #25292e !important;
+  color: #25292e;
 }
 a.u-button-style:hover > .u-text-hover-palette-1-dark-3,
 a.u-button-style:hover > .u-text-hover-palette-1-dark-3[class*="u-border-"],
@@ -32689,7 +32689,7 @@ a.u-link.u-text-hover-palette-4-light-3:hover {
 .u-text-palette-4-base,
 a.u-button-style.u-text-palette-4-base,
 a.u-button-style.u-text-palette-4-base[class*="u-border-"] {
-  color: #2cccc4 !important;
+  color: #2cccc4;
 }
 a.u-button-style.u-text-palette-4-base:hover,
 a.u-button-style.u-text-palette-4-base[class*="u-border-"]:hover,
