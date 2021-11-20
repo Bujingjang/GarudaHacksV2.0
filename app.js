@@ -37,8 +37,9 @@ const auth = firebaseAuth.getAuth();
 
 auth.onAuthStateChanged( user => {
     if (user) {
-        console.log("YES");
         return user;
+    } else {
+        return undefined;
     }
 });
 
@@ -147,6 +148,7 @@ app.post('/login', async (req, res) => {
         (err) => {
             console.log(err)
             console.log("LOGIN FAILED");
+            res.render(path.join(__dirname,"views/Login.ejs"), {error: err});
         });
     
     console.log(user);
