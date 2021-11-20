@@ -6,14 +6,18 @@
     <body>
         <form action="/register-influencer" method="POST">
             <label for="fullname">Fullname:</label>
-            <input type="text" placeholder="anjing@tiko.com" name="fullname" id="fullname">
+            <input type="text" placeholder="Anjing Tiko" name="fullname" id="fullname">
+            <label for="email">Email:</label>
+            <input type="text" placeholder="anjing@tiko.com" name="email" id="email">
             <label for="password">Password:</label>
             <input type="password" placeholder="password" name="password" id="password">
             <label for="birhtdate">Birth Date:</label>
             <input type="date" placeholder="birthdate" name="birthdate" id="birthdate" min="1900-01-01">
-            <label for="instagram">instagram:</label>
-            <input type="text" placeholder="instagram" name="instagram" id="instagram">
+            <label for="phoneNumber">Phone number:</label>
+            <input type="text" placeholder="phoneNumber" name="phoneNumber" id="phoneNumber">
+            <input type="submit" value="Submit">
         </form>
+        <p><%= error %> </p>
     </body>
 </html>
 <script>
