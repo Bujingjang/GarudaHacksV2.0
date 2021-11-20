@@ -31,7 +31,7 @@ app.get('/register-influencer', function(req, res) {
     console.log("customer");
     let anjing = {
         Public: {
-            name: "ANJING",
+            name: "ANJING"
         }
     };
     // db.collection("Sample").doc("TIKBAI").set(anjing);
