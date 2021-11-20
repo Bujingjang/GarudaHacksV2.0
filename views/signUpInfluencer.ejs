@@ -77,7 +77,7 @@
                 </div>
                 <div class="u-form-group u-form-password">
                     <label for="birhtdate" class="u-custom-font u-label u-label-2">Birth Of Date *</label>
-                    <input type="date" placeholder="Enter your birth of date" id="birhtdate" name="birhtdate" class="u-custom-font u-grey-5 u-input u-input-rectangle u-input-2" required="">
+                    <input type="date" placeholder="Enter your birth of date" id="birthdate" name="birthdate" class="u-custom-font u-grey-5 u-input u-input-rectangle u-input-2" required="">
                 </div>
                 <div class="u-form-group u-form-password">
                     <label for="phoneNumber" class="u-custom-font u-label u-label-2">Phone Number *</label>
@@ -111,3 +111,8 @@
 </section>
 </body>
 </html>
+<script>
+    let birthdate = document.querySelector("#birthdate");
+    birthdate.max = `${new Date().getFullYear()-17}-${new Date().getMonth()+1}-${new Date().getDate()}`;
+    birthdate.value = "2000-01-01";
+</script>

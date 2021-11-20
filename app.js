@@ -98,7 +98,7 @@ app.get('/', function(req, res){
 });
 
 app.get('/register-influencer', function(req, res) {
-    res.render(path.join(__dirname, "views/register.ejs"), {error:''});
+    res.render(path.join(__dirname, "views/signUpInfluencer.ejs"), {error:''});
 });
 
 app.post('/register-influencer', (req, res) => {
@@ -120,7 +120,7 @@ app.post('/register-influencer', (req, res) => {
     }).catch(
         (err)=> {
             console.log(err);
-            res.render(path.join(__dirname, "views/register.ejs"), {error: err});
+            res.render(path.join(__dirname, "views/signUpInfluencer.ejs"), {error: err});
         }
     );
     console.log(user);
@@ -137,13 +137,13 @@ app.get('/login', (req,res)=>{
 
 app.post('/login', async (req, res) => {
     const {
-        username,
+        email,
         password,
         checked
     } = req.body;
-    console.log(username, password);
+    console.log(email, password);
     console.log(req.body);
-    const user = await firebaseAuth.signInWithEmailAndPassword(auth, username, password).catch(
+    const user = await firebaseAuth.signInWithEmailAndPassword(auth, email, password).catch(
         (err) => {
             console.log(err)
             console.log("LOGIN FAILED");
