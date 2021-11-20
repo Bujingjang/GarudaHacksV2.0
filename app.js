@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const firebaseAdmin = require("firebase-admin");
 const firebaseService = require("firebase-service");
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-267b29bf43.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-adbd36d8f6.json");
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -51,6 +51,10 @@ app.get('/register-influencer', function(req, res) {
 
 app.get('/login',(req,res)=>{
     res.render(path.join(__dirname,"./views/Login.ejs"));
+})
+
+app.get('/influencer',(req,res)=>{
+    res.render(path.join(__dirname,"./views/Influencers.ejs"))
 })
 
 app.post('/register-influencer', async (req, res) => {
