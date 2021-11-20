@@ -114,9 +114,14 @@ app.get('/infProfPageView', (req, res) => {
     res.render(path.join(__dirname,"./views/influencerProfilePageView.ejs"));
 });
 
-//Showing Influencer Profile Page Edit
+// Showing Influencer Profile Page Edit
 app.get('/infProfPageEdit', (req, res) => {
     res.render(path.join(__dirname,"./views/influencerProfilePageEdit.ejs"));
+});
+
+// Showing Company Profile Page View
+app.get('/ComProfPageView', (req, res) => {
+    res.render(path.join(__dirname,"./views/companyProfilePageView.ejs"));
 });
 
 app.post('/register-influencer', async (req, res) => {
