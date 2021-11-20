@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const firebaseAdmin = require("firebase-admin");
 const firebaseService = require("firebase-service");
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-c79c219345.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-267b29bf43.json");
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,24 +38,22 @@ app.get('/', function(req, res){
     //res.send("test");
 });
 
-
-
 app.get('/register-influencer', function(req, res) {
-    console.log("customer");
+    //console.log("customer");
     // let anjing = {
     //     Public: {
     //         name: "ANJING",
     //     },
     // };
     // db.collection("Sample").doc("TIKBAI").set(anjing);
-    res.render(path.join(__dirname, "views/register.ejs"), {error:''});
+    res.render(path.join(__dirname, "views/signUpInfluencer.ejs"), {error:''});
 });
 
 app.get('/login',(req,res)=>{
     res.render(path.join(__dirname,"./views/Login.ejs"));
 })
 
-app.post('register-influencer', async (req, res) => {
+app.post('/register-influencer', async (req, res) => {
     console.log("posted data for registering influencers");
     const {
         displayName,
