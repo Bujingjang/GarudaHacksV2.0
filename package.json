@@ -1,0 +1,23 @@
+{
+  "name": "GarudaHacksV2.0",
+  "version": "1.0.0",
+  "description": "Garuda Hacks 19 - 21 November 2021 Project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bujingjang/GarudaHacksV2.0.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bujingjang/GarudaHacksV2.0/issues"
+  },
+  "homepage": "https://github.com/Bujingjang/GarudaHacksV2.0#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
