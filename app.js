@@ -67,24 +67,28 @@ const getAuthToken = (req, res, next) => {
   
 //still not done
 const checkIfAuthenticated = (req, res, next) => {
-   getAuthToken(req, res, async () => {
-      try {
-        console.log("CHECKING");
-        console.log(auth.currentUser);
-        const { authToken } = await auth.currentUser.getIdToken();
-        console.log(authToken);
-        
-        const userInfo = await firebaseService.admin
-          .auth()
-          .verifyIdToken(authToken);
-        req.authId = userInfo.uid;
-        return next();
-      } catch (e) {
-        return res
-          .status(401)
-          .send({ error: 'You are not authorized to make this request' });
-      }
+    getAuthToken(req, res, async () => {
+        return auth.currentUser?next():res
+        .status(401)
+        .send({ error: 'You are not authorized to make this request' });
     });
+    //   try {
+    //     console.log("CHECKING");
+    //     console.log(auth.currentUser);
+    //     const { authToken } = await auth.currentUser.getIdToken();
+    //     console.log(authToken);
+        
+    //     const userInfo = await firebaseService.admin
+    //       .auth()
+    //       .verifyIdToken(authToken);
+    //     req.authId = userInfo.uid;
+    //     return next();
+    //   } catch (e) {
+    //     return res
+    //       .status(401)
+    //       .send({ error: 'You are not authorized to make this request' });
+    //   }
+    // });
   };
 
 
@@ -157,7 +161,7 @@ app.get('/home', checkIfAuthenticated, function(req, res) {
     res.render(path.join(__dirname, "views/Home.ejs"));
 });
 
-app.get('/profile', function(req, res) {
+app.get('/profile', checkIfAuthenticated, function(req, res) {
     res.render(path.join(__dirname, "views/profilePage.ejs"));
 });
 
