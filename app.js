@@ -3,6 +3,7 @@ const path = require('path');
 const app = express();
 const bodyParser = require("body-parser");
 const firebaseAdmin = require("firebase-admin");
+const firebase = require("firebase/app");
 const firebaseService = require("firebase-service");
 const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-adbd36d8f6.json");
 
@@ -19,8 +20,39 @@ firebaseAdmin.initializeApp({
 });
 
 const db = firebaseAdmin.firestore();
-const userCollection = 'users';
 
+const firebaseConfig = {
+    apiKey: "AIzaSyDJv0pnzZSMYPVAyJ7SIoxdE5EyZNwRLks",
+    authDomain: "garudahacks-f6ce2.firebaseapp.com",
+    projectId: "garudahacks-f6ce2",
+    storageBucket: "garudahacks-f6ce2.appspot.com",
+    messagingSenderId: "1007671370287",
+    appId: "1:1007671370287:web:ff3036b5ed7fc516b7dcda",
+    measurementId: "G-ZNHJGS3HBS"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebaseAuth.getAuth();
+
+auth.onAuthStateChanged( user => {
+    if (user) {
+        return user;
+    } else {
+        return undefined;
+    }
+});
+
+// const getArticles = async () => {
+//     const token = await auth.currentUser.getIdToken();
+    
+//     return axios.get('https://your-api-url/articles', {headers:  
+//       { authorization: `Bearer ${token}` }})
+//       .then(res => res.data);
+// }
+    
+
+//still not done
 const getAuthToken = (req, res, next) => {
     if (
         req.headers.authorization &&
@@ -32,6 +64,32 @@ const getAuthToken = (req, res, next) => {
     }
     next();
 };
+//still not done
+const checkIfAuthenticated = (req, res, next) => {
+    getAuthToken(req, res, async () => {
+        return auth.currentUser?next():res
+        .status(401)
+        .send({ error: 'You are not authorized to make this request' });
+    });
+    //   try {
+    //     console.log("CHECKING");
+    //     console.log(auth.currentUser);
+    //     const { authToken } = await auth.currentUser.getIdToken();
+    //     console.log(authToken);
+        
+    //     const userInfo = await firebaseService.admin
+    //       .auth()
+    //       .verifyIdToken(authToken);
+    //     req.authId = userInfo.uid;
+    //     return next();
+    //   } catch (e) {
+    //     return res
+    //       .status(401)
+    //       .send({ error: 'You are not authorized to make this request' });
+    //   }
+    // });
+};
+
 
 app.get('/', function(req, res){
     res.render(path.join(__dirname, "./views/Home.ejs"));
@@ -39,13 +97,6 @@ app.get('/', function(req, res){
 });
 
 app.get('/register-influencer', function(req, res) {
-    //console.log("customer");
-    // let anjing = {
-    //     Public: {
-    //         name: "ANJING",
-    //     },
-    // };
-    // db.collection("Sample").doc("TIKBAI").set(anjing);
     res.render(path.join(__dirname, "views/signUpInfluencer.ejs"), {error:''});
 });
 
@@ -67,7 +118,7 @@ app.post('/register-influencer', async (req, res) => {
         phoneNumber
     } = req.body;
     console.log(req.body);
-    const user = await firebaseAdmin.auth().createUser({
+    const user = firebaseAdmin.auth().createUser({
         email,
         password,
         birthdate,
@@ -76,7 +127,7 @@ app.post('/register-influencer', async (req, res) => {
     }).catch(
         (err)=> {
             console.log(err);
-            res.render(path.join(__dirname, "views/register.ejs"), {error: err});
+            res.render(path.join(__dirname, "views/signUpInfluencer.ejs"), {error: err});
         }
     );
     console.log(user);
@@ -84,18 +135,41 @@ app.post('/register-influencer', async (req, res) => {
     //     email:email,
     //     password:password
     // }).catch(err=>console.log(err));
-    res.redirect("/");
+    res.redirect("/login");
+});
+
+app.get('/login', (req,res)=>{
+    res.render(path.join(__dirname,"./views/Login.ejs"));
+});
+
+app.post('/login', async (req, res) => {
+    const {
+        email,
+        password,
+        checked
+    } = req.body;
+    console.log(email, password);
+    console.log(req.body);
+    const user = await firebaseAuth.signInWithEmailAndPassword(auth, email, password).catch(
+        (err) => {
+            console.log(err)
+            console.log("LOGIN FAILED");
+            res.render(path.join(__dirname,"views/Login.ejs"), {error: err});
+        });
+    
+    console.log(user);
+    res.redirect("/home");
 });
 
 app.get('/register-employer', function(req, res) {
     res.render(path.join(__dirname, "views/register.ejs"));
 });
 
-app.get('/home', function(req, res) {
-    res.render(path.join(__dirname, "views/register.ejs"));
+app.get('/home', checkIfAuthenticated, function(req, res) {
+    res.render(path.join(__dirname, "views/Home.ejs"));
 });
 
-app.get('/profile', function(req, res) {
+app.get('/profile', checkIfAuthenticated, function(req, res) {
     res.render(path.join(__dirname, "views/profilePage.ejs"));
 });
 

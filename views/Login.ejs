@@ -62,10 +62,10 @@
     <section class="u-align-center u-clearfix u-section-1" id="sec-6434">
       <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
         <div class="u-form u-login-control u-form-1">
-          <form action="#" method="POST" class="u-clearfix u-form-custom-backend u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form" style="padding: 10px;">
+          <form action="/login" method="POST" class="u-clearfix u-form-custom-backend u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form" style="padding: 10px;">
             <div class="u-form-group u-form-name">
-              <label for="username-a30d" class="u-custom-font u-label u-label-1">Username *</label>
-              <input type="text" placeholder="Enter your Username" id="username-a30d" name="username" class="u-custom-font u-grey-5 u-input u-input-rectangle u-input-1" required="">
+              <label for="username-a30d" class="u-custom-font u-label u-label-1">Email *</label>
+              <input type="text" placeholder="Enter your email" id="username-a30d" name="email" class="u-custom-font u-grey-5 u-input u-input-rectangle u-input-1" required="">
             </div>
             <div class="u-form-group u-form-password">
               <label for="password-a30d" class="u-custom-font u-label u-label-2">Password *</label>
@@ -81,6 +81,7 @@
             </div>
             <input type="hidden" value="" name="recaptchaResponse">
           </form>
+          <p style="color:red;"><%= error %></p>
         </div>
         <a href="#" class="u-border-1 u-border-active-custom-color-3 u-border-hover-custom-color-1 u-border-white u-btn u-button-style u-custom-font u-login-control u-login-forgot-password u-none u-text-custom-color-1 u-btn-2">Forgot password?</a>
         <a href="#" class="u-border-1 u-border-active-palette-2-base u-border-hover-palette-1-base u-btn u-button-style u-custom-font u-login-control u-login-create-account u-none u-text-custom-color-1 u-btn-3">Don't have an account?</a>
