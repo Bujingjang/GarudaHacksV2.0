@@ -3,7 +3,7 @@ const path = require('path');
 const app = express();
 const bodyParser = require("body-parser");
 const firebaseAdmin = require("firebase-admin");
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-c79c219345.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-267b29bf43.json");
 
 app.use(bodyParser.json());
 app.use(express.static("images"));
