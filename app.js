@@ -32,6 +32,10 @@ app.get('/register-employer', function(req, res) {
     res.render(path.join(__dirname, "views/register.ejs"));
 });
 
+app.get('/profile', function(req, res) {
+    res.render(path.join(__dirname, "views/profilePage.ejs"));
+});
+
 app.listen(8080,()=>{
     console.log("Connected to server");
 });
