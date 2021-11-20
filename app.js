@@ -23,9 +23,7 @@ app.get('/', function(req, res){
     //res.send("test");
 });
 
-app.get('/login',(req,res)=>{
-    res.render(path.join(__dirname,"./views/Login.ejs"));
-})
+
 
 app.get('/register-influencer', function(req, res) {
     console.log("customer");
@@ -37,6 +35,10 @@ app.get('/register-influencer', function(req, res) {
     // db.collection("Sample").doc("TIKBAI").set(anjing);
     res.render(path.join(__dirname, "views/register.ejs"));
 });
+
+app.get('/login',(req,res)=>{
+    res.render(path.join(__dirname,"./views/Login.ejs"));
+})
 
 app.post('register-influencer', function(req, res) {
     console.log("posted data for registering influencers");
