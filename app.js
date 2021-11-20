@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const firebaseAdmin = require("firebase-admin");
 const firebase = require("firebase/app");
+const firebaseAuth = require("firebase/auth");
 const firebaseService = require("firebase-service");
 const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-adbd36d8f6.json");
 
@@ -101,12 +102,17 @@ app.get('/register-influencer', function(req, res) {
 });
 
 app.get('/login',(req,res)=>{
-    res.render(path.join(__dirname,"./views/Login.ejs"));
+    res.render(path.join(__dirname,"./views/Login.ejs"), {error:''});
 })
 
 app.get('/influencer',(req,res)=>{
     res.render(path.join(__dirname,"./views/Influencers.ejs"))
 })
+
+// Showing Influencer Profile Page View
+app.get('/infProfPageView', (rqe, res) => {
+    res.render(path.join(__dirname,"./views/influencerProfilePageView.ejs"));
+});
 
 app.post('/register-influencer', async (req, res) => {
     console.log("posted data for registering influencers");
