@@ -25,7 +25,18 @@ app.get('/', function(req, res){
 
 app.get('/register-influencer', function(req, res) {
     console.log("customer");
+    let anjing = {
+        Public: {
+            name: "ANJING",
+        },
+    };
+    // db.collection("Sample").doc("TIKBAI").set(anjing);
     res.render(path.join(__dirname, "views/register.ejs"));
+});
+
+app.post('register-influencer', function(req, res) {
+    console.log("posted data for registering influencers");
+    res.redirect();
 });
 
 app.get('/register-employer', function(req, res) {
