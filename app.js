@@ -38,6 +38,8 @@ app.get('/', function(req, res){
     //res.send("test");
 });
 
+
+
 app.get('/register-influencer', function(req, res) {
     console.log("customer");
     // let anjing = {
@@ -49,7 +51,11 @@ app.get('/register-influencer', function(req, res) {
     res.render(path.join(__dirname, "views/register.ejs"), {error:''});
 });
 
-app.post('/register-influencer', async (req, res) => {
+app.get('/login',(req,res)=>{
+    res.render(path.join(__dirname,"./views/Login.ejs"));
+})
+
+app.post('register-influencer', async (req, res) => {
     console.log("posted data for registering influencers");
     const {
         displayName,
@@ -85,6 +91,10 @@ app.get('/register-employer', function(req, res) {
 
 app.get('/home', function(req, res) {
     res.render(path.join(__dirname, "views/register.ejs"));
+});
+
+app.get('/profile', function(req, res) {
+    res.render(path.join(__dirname, "views/profilePage.ejs"));
 });
 
 app.listen(8080,()=>{
