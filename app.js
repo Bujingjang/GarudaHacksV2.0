@@ -110,8 +110,13 @@ app.get('/influencer',(req,res)=>{
 })
 
 // Showing Influencer Profile Page View
-app.get('/infProfPageView', (rqe, res) => {
+app.get('/infProfPageView', (req, res) => {
     res.render(path.join(__dirname,"./views/influencerProfilePageView.ejs"));
+});
+
+//Showing Influencer Profile Page Edit
+app.get('/infProfPageEdit', (req, res) => {
+    res.render(path.join(__dirname,"./views/influencerProfilePageEdit.ejs"));
 });
 
 app.post('/register-influencer', async (req, res) => {
