@@ -124,6 +124,11 @@ app.get('/ComProfPageView', (req, res) => {
     res.render(path.join(__dirname,"./views/companyProfilePageView.ejs"));
 });
 
+// Showing Company Profile Page Edit
+app.get('/ComProfPageEdit', (req, res) => {
+    res.render(path.join(__dirname,"./views/companyProfilePageEdit.ejs"));
+});
+
 app.post('/register-influencer', async (req, res) => {
     console.log("posted data for registering influencers");
     const {
