@@ -93,8 +93,6 @@ app.get('/', function(req, res){
     //res.send("test");
 });
 
-
-
 app.get('/register-influencer', function(req, res) {
     res.render(path.join(__dirname, "views/register.ejs"), {error:''});
 });
