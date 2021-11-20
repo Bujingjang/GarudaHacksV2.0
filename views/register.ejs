@@ -6,13 +6,18 @@
     <body>
         <form action="/register-influencer" method="POST">
             <label for="fullname">Fullname:</label>
-            <input type="text" placeholder="fullname" name="fullname" id="fullname">
-            <label for="fullname">Fullname:</label>
-            <input type="text" placeholder="fullname" name="fullname" id="fullname">
-            <label for="fullname">Fullname:</label>
-            <input type="text" placeholder="fullname" name="fullname" id="fullname">
-            <label for="fullname">Fullname:</label>
-            <input type="text" placeholder="fullname" name="fullname" id="fullname">
+            <input type="text" placeholder="anjing@tiko.com" name="fullname" id="fullname">
+            <label for="password">Password:</label>
+            <input type="password" placeholder="password" name="password" id="password">
+            <label for="birhtdate">Birth Date:</label>
+            <input type="date" placeholder="birthdate" name="birthdate" id="birthdate" min="1900-01-01">
+            <label for="instagram">instagram:</label>
+            <input type="text" placeholder="instagram" name="instagram" id="instagram">
         </form>
     </body>
 </html>
+<script>
+    let birthdate = document.querySelector("#birthdate");
+    birthdate.max = `${new Date().getFullYear()-17}-${new Date().getMonth()+1}-${new Date().getDate()}`;
+    birthdate.value = "2000-01-01";
+</script>
