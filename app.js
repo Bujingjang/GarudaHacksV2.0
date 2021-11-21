@@ -6,7 +6,7 @@ const firebaseAdmin = require("firebase-admin");
 const firebase = require("firebase/app");
 const firebaseAuth = require("firebase/auth");
 const firebaseService = require("firebase-service");
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-adbd36d8f6.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-c79c219345.json");
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -151,20 +151,33 @@ app.post('/login', async (req, res) => {
         });
     var uid = user.user.uid;
     console.log(uid, "LOGIN SUCCESSFUL");
-    const userRef = db.collection('users').doc(uid);
-    const doc = await userRef.get();
-    //finding the role of the user (influencer or company)
-    let role;
-    if (!doc.exists) {
-        role = "Unknown";
-    } else {
-        role = doc._fieldsProto.role.stringValue.toUpperCase();    
-        if(role=="INFLUENCER"){
-            res.redirect("/influencer");
-        }else{
-            res.redirect("/");
+    const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
+    const role = userRef.data().role;
+    if (role) {
+        if (role.toUpperCase()=="INFLUENCER") {
+            res.redirect(301, `influencer/${uid}`);
+        }  
+        if (role.toUpperCase()=="COMPANY") {
+            res.redirect(301, "/");
         }
+    } else {
+        res.render(path.join(__dirname,"views/Login.ejs"), {error: "This user does not have a role"});
     }
+    
+    // const doc = await userRef.get();
+    //finding the role of the user (influencer or company)
+    // let role;
+    // if (!doc.exists) {
+    //     role = "Unknown";
+    // } else {
+    //     role = doc._fieldsProto.role.stringValue.toUpperCase();    
+    //     if(role=="INFLUENCER"){
+    //         res.redirect("/influencer");
+    //     }else{
+    //         res.redirect("/");
+    //     }
+    // }
+    res.redirect(301, `/influencer/${uid}`);
 });
 
 app.get('/register-employer', function(req, res) {
