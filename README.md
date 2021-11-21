@@ -4,3 +4,4 @@ Garuda Hacks 19 - 21 November 2021 Project
 Our website is aimed to connect Influencers or Key Oppinion Leaders with Companies (big or small) to advertise to the right market
 Our Idea is that companies can find influencers based on their locations and target audience to filter out and get the best candidates
 
+<npm install>
