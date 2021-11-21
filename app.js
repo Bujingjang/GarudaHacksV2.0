@@ -6,7 +6,7 @@ const firebaseAdmin = require("firebase-admin");
 const firebase = require("firebase/app");
 const firebaseAuth = require("firebase/auth");
 const firebaseService = require("firebase-service");
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-c79c219345.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-adbd36d8f6.json");
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -114,22 +114,22 @@ app.get('influencerFilter', (req, res)=> {
 });
 
 // Showing Influencer Profile Page View
-app.get('/infProfPageView', (req, res) => {
+app.get('/infProfPageView',checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/influencerProfilePageView.ejs"));
 });
 
 // Showing Influencer Profile Page Edit
-app.get('/infProfPageEdit', (req, res) => {
+app.get('/infProfPageEdit',checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/influencerProfilePageEdit.ejs"));
 });
 
 // Showing Company Profile Page View
-app.get('/ComProfPageView', (req, res) => {
+app.get('/ComProfPageView',checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/companyProfilePageView.ejs"));
 });
 
 // Showing Company Profile Page Edit
-app.get('/ComProfPageEdit', (req, res) => {
+app.get('/ComProfPageEdit',checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/companyProfilePageEdit.ejs"));
 });
 
@@ -148,7 +148,7 @@ app.post('/register-influencer', async (req, res) => {
         password,
         birthdate,
         phoneNumber: phoneNumber,
-        displayName: fullname,
+        displayName: fullname
     }).catch(
         (err)=> {
             console.log(err);
@@ -156,9 +156,12 @@ app.post('/register-influencer', async (req, res) => {
         }
     );
     const userInfo = {
+        "email" : email,
+        "password" : password,
         "displayName":fullname,
         "birthdate":birthdate,
-        "phoneNumber":phoneNumber
+        "phoneNumber":phoneNumber,
+        "role" : "influencer"
     };
     console.log(userInfo);
     const newDoc = await db.collection("users").doc(user.uid).set(userInfo).catch((err)=>{
@@ -186,7 +189,22 @@ app.post('/login', async (req, res) => {
             res.render(path.join(__dirname,"views/Login.ejs"), {error: err});
         });
     var uid = user.user.uid;
-    res.redirect("/home");
+    console.log(uid, "LOGIN SUCCESSFUL");
+    const userRef = db.collection('users').doc(uid);
+    const doc = await userRef.get();
+    //finding the role of the user (influencer or company)
+    let role;
+    if (!doc.exists) {
+        role = "Unknown";
+    } else {
+        role = doc._fieldsProto.role.stringValue.toUpperCase();    
+        if(role=="INFLUENCER"){
+            res.redirect("/influencer");
+        }else{
+            res.redirect("/");
+        }
+    }
+    
 });
 
 app.get('/register-employer', function(req, res) {
