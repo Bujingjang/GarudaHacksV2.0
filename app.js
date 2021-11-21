@@ -242,6 +242,10 @@ app.get('/companies', checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/Companies.ejs"));
 });
 
+app.get('/companyFilter', checkIfAuthenticated, (req, res) => {
+    res.render(path.join(__dirname,"./views/CompaniesSearchFilter.ejs"));
+});
+
 app.get('/profile/:id', checkIfAuthenticated, async (req, res) => {
     // console.log(req.params);
     let uid = req.params.id;
@@ -259,6 +263,14 @@ app.post('/influencerResult', checkIfAuthenticated, (req, res)=>{
     //res.redirect("/searchResult/" +genre + "/" + location);
 });
 
+app.post('/companyResult', checkIfAuthenticated, (req, res)=>{
+    console.log(req.body);
+    const genre = req.body["market-select"];
+    const location = req.body["location-select"];
+    res.redirect(301, `/companySearchResult/${genre}/${location}`);
+    //res.redirect("/searchResult/" +genre + "/" + location);
+});
+
 app.get('/searchResult/:genre/:location', checkIfAuthenticated, async (req, res) => {
     let snapshot = await db.collection("users").get().catch(err => console.log(err));
     let influencers = [];
@@ -268,6 +280,17 @@ app.get('/searchResult/:genre/:location', checkIfAuthenticated, async (req, res)
     });
     console.log(influencers);
     res.render(path.join(__dirname, "views/InfluencerSearchFilter.ejs"), {influencers: influencers});
+});
+
+app.get('/companySearchResult/:genre/:location', checkIfAuthenticated, async (req, res) => {
+    let snapshot = await db.collection("users").get().catch(err => console.log(err));
+    let companies = [];
+    snapshot.forEach(doc => {
+        let company = {...doc.data(), id: doc.id};
+        companies.push(company);
+    });
+    console.log(companies);
+    res.render(path.join(__dirname, "views/CompaniesSearchFilter.ejs"), {companies: companies});
 });
 
 app.listen(8080,()=>{
