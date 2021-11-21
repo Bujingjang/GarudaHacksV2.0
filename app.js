@@ -6,7 +6,7 @@ const firebaseAdmin = require("firebase-admin");
 const firebase = require("firebase/app");
 const firebaseAuth = require("firebase/auth");
 const firebaseService = require("firebase-service");
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-adbd36d8f6.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-c79c219345.json");
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -103,11 +103,16 @@ app.get('/register-influencer', function(req, res) {
 
 app.get('/login',(req,res)=>{
     res.render(path.join(__dirname,"./views/Login.ejs"), {error:''});
-})
+});
 
 app.get('/influencer',(req,res)=>{
-    res.render(path.join(__dirname,"./views/Influencers.ejs"))
-})
+    res.render(path.join(__dirname,"./views/Influencers.ejs"));
+});
+
+
+app.get('influencerFilter', (req, res)=> {
+    res.render(path.join(__dirname,"./views/InfluencerSearchFilter.ejs"));
+});
 
 // Showing Influencer Profile Page View
 app.get('/infProfPageView', (req, res) => {
@@ -132,30 +137,34 @@ app.get('/ComProfPageEdit', (req, res) => {
 app.post('/register-influencer', async (req, res) => {
     console.log("posted data for registering influencers");
     const {
-        displayName,
+        fullname,
         email,
         password,
         birthdate,
         phoneNumber
     } = req.body;
     console.log(req.body);
-    const user = firebaseAdmin.auth().createUser({
+    const user = await firebaseAdmin.auth().createUser({
         email,
         password,
         birthdate,
         phoneNumber: phoneNumber,
-        displayName: displayName,
+        displayName: fullname,
     }).catch(
         (err)=> {
             console.log(err);
             res.render(path.join(__dirname, "views/signUpInfluencer.ejs"), {error: err});
         }
     );
-    console.log(user);
-    // const user = await firebaseAdmin.auth().createUserWithEmailAndPassword({
-    //     email:email,
-    //     password:password
-    // }).catch(err=>console.log(err));
+    const userInfo = {
+        "displayName":fullname,
+        "birthdate":birthdate,
+        "phoneNumber":phoneNumber
+    };
+    console.log(userInfo);
+    const newDoc = await db.collection("users").doc(user.uid).set(userInfo).catch((err)=>{
+        res.render(path.join(__dirname, "views/signUpInfluencer.ejs"), {error: err});
+    });
     res.redirect("/login");
 });
 
@@ -177,8 +186,7 @@ app.post('/login', async (req, res) => {
             console.log("LOGIN FAILED");
             res.render(path.join(__dirname,"views/Login.ejs"), {error: err});
         });
-    
-    console.log(user);
+    var uid = user.user.uid;
     res.redirect("/home");
 });
 
