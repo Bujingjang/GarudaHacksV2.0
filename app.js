@@ -106,9 +106,8 @@ app.get('/login',(req,res)=>{
 });
 
 app.get('/influencer',(req,res)=>{
-    res.render(path.join(__dirname,"./views/Influencers.ejs"));
+    res.render(path.join(__dirname,"./views/Influencers.ejs"))
 });
-
 
 app.get('influencerFilter', (req, res)=> {
     res.render(path.join(__dirname,"./views/InfluencerSearchFilter.ejs"));
@@ -200,6 +199,20 @@ app.get('/home', checkIfAuthenticated, function(req, res) {
 
 app.get('/profile', checkIfAuthenticated, function(req, res) {
     res.render(path.join(__dirname, "views/profilePage.ejs"));
+});
+
+app.post('/influencerResult',(req, res)=>{
+    console.log(req.body);
+    const genre = req.body["market-select"];
+    const location = req.body["location-select"];
+    res.redirect(301, `/searchResult/${genre}/${location}`);
+    //res.redirect("/searchResult/" +genre + "/" + location);
+});
+
+app.get('/searchResult/:genre/:location', (req, res) => {
+    console.log("genre: " + req.params.genre);
+    console.log("location: " + req.params.location);
+    res.render(path.join(__dirname, "views/InfluencerSearchFilter.ejs"));
 });
 
 app.listen(8080,()=>{
