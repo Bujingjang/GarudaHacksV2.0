@@ -6,7 +6,7 @@ const firebaseAdmin = require("firebase-admin");
 const firebase = require("firebase/app");
 const firebaseAuth = require("firebase/auth");
 const firebaseService = require("firebase-service");
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-adbd36d8f6.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-c79c219345.json");
 
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
@@ -164,25 +164,48 @@ app.post('/login', async (req, res) => {
     } else {
         res.render(path.join(__dirname,"views/Login.ejs"), {error: "This user does not have a role"});
     }
-    
-    // const doc = await userRef.get();
-    //finding the role of the user (influencer or company)
-    // let role;
-    // if (!doc.exists) {
-    //     role = "Unknown";
-    // } else {
-    //     role = doc._fieldsProto.role.stringValue.toUpperCase();    
-    //     if(role=="INFLUENCER"){
-    //         res.redirect("/influencer");
-    //     }else{
-    //         res.redirect("/");
-    //     }
-    // }
-    res.redirect(301, `/influencer/${uid}`);
 });
 
 app.get('/register-employer', function(req, res) {
     res.render(path.join(__dirname, "views/signUpEmployer.ejs"), {error:""});
+});
+
+app.post('/register-employer', async(req, res) => {
+    console.log("posted data for registering employers");
+    const {
+        fullname,
+        email,
+        password,
+        birthdate,
+        phoneNumber, 
+        company
+    } = req.body;
+    const user = await firebaseAdmin.auth().createUser({
+        email,
+        password,
+        birthdate,
+        phoneNumber: phoneNumber,
+        displayName: fullname
+    }).catch(
+        (err)=> {
+            console.log(err);
+            res.render(path.join(__dirname, "views/signUpInfluencer.ejs"), {error: err});
+        }
+    );
+    const employerInfo = {
+        "email" : email,
+        "password" : password,
+        "displayName":fullname,
+        "birthdate":birthdate,
+        "phoneNumber":phoneNumber,
+        "company": company,
+        "role" : "company"
+    };
+    
+    const newDoc = await db.collection("employers").doc(user.uid).set(employerInfo).catch((err)=>{
+        res.render(path.join(__dirname, "views/signUpEmployer.ejs"), {error: err});
+    });
+    res.redirect("/login");
 });
 
 app.get('/influencer', checkIfAuthenticated, (req,res)=>{
@@ -218,7 +241,6 @@ app.get('/profile/:id', checkIfAuthenticated, async (req, res) => {
     let uid = req.params.id;
     let snapshot = await db.collection("users").doc(uid).get().catch(err => console.log(err));
     let profile = snapshot.data();
-    console.log(profile);
     // let name = await db.collection("users").doc(auth.currentUser.user.uid).get("displayName").catch(err => console.log(err));
     res.render(path.join(__dirname, "views/influencerProfilePageView.ejs"), {profile:profile});
 });
@@ -234,12 +256,6 @@ app.post('/influencerResult', checkIfAuthenticated, (req, res)=>{
 app.get('/searchResult/:genre/:location', checkIfAuthenticated, async (req, res) => {
     let snapshot = await db.collection("users").get().catch(err => console.log(err));
     let influencers = [];
-    // for (let snap of snapshot) {
-    //     let id = snap.id;
-    //     influencers.push({
-    //         id: snap.data()
-    //     });
-    // }
     snapshot.forEach(doc => {
         let influencer = {...doc.data(), id: doc.id};
         influencers.push(influencer);
