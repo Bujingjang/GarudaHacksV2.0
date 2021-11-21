@@ -35318,7 +35318,7 @@ a.u-link.u-text-hover-grey-90:hover {
 }
 
 .u-header .u-sheet-1 {
-  min-height: 80px;
+  min-height: 92px;
 }
 
 .u-header .u-image-1 {
@@ -35345,6 +35345,16 @@ a.u-link.u-text-hover-grey-90:hover {
   font-size: 1.25rem;
 }
 
+<<<<<<< Updated upstream
+=======
+.u-header .u-image-1 {
+  width: 300px;
+  height: 52px;
+  margin: -16px auto 0 0;
+}
+
+
+>>>>>>> Stashed changes
 
 
  .u-footer {
