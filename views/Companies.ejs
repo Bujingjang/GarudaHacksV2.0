@@ -9,14 +9,12 @@
     <title>Companies</title>
     <link rel="stylesheet" href="../../styles/nicepage.css" media="screen">
 <link rel="stylesheet" href="../../styles/Companies.css" media="screen">
-    <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
-    <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
     <meta name="generator" content="Nicepage 3.30.2, nicepage.com">
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Advent+Pro:100,200,300,400,500,600,700">
     <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Advent+Pro:100,200,300,400,500,600,700">
-    
-    
-    
+
+
+
     <script type="application/ld+json">{
 		"@context": "http://schema.org",
 		"@type": "Organization",
@@ -135,7 +133,7 @@
                     </form>
                   </div>
                   <div class="u-custom-color-1 u-form u-radius-20 u-form-2">
-                    <form action="#" method="POST" class="u-clearfix u-form-horizontal u-form-spacing-10 u-inner-form" source="custom" name="form" style="padding: 30px;">
+                    <form action="/companyResult" method="POST" class="u-clearfix u-form-horizontal u-form-spacing-10 u-inner-form" source="custom" name="form" style="padding: 30px;">
                       <div class="u-form-group u-form-partition-factor-2 u-form-select u-form-group-3">
                         <label for="select-c8d2" class="u-custom-font u-label u-label-2">Genre</label>
                         <div class="u-form-select-wrapper">
@@ -161,12 +159,14 @@
                         </div>
                       </div>
                       <div class="u-align-left u-form-group u-form-submit">
-                        <a href="#" class="u-btn u-btn-round u-btn-submit u-button-style u-custom-color-2 u-radius-20 u-text-white u-btn-2">Submit</a>
-                        <input type="submit" value="submit" class="u-form-control-hidden" placeholder="Search">
+                          <input type="submit" value="submit"
+                                 class="u-border-none u-btn u-btn-round u-btn-submit u-button-style u-custom-color-2 u-radius-20 u-text-white u-btn-2"
+                                 placeholder="Search Company!">
                       </div>
+                        <!--
                       <div class="u-form-send-message u-form-send-success"> Thank you! Your message has been sent. </div>
                       <div class="u-form-send-error u-form-send-message"> Unable to send your message. Please fix errors then try again. </div>
-                      <input type="hidden" value="" name="recaptchaResponse">
+                      <input type="hidden" value="" name="recaptchaResponse"> -->
                     </form>
                   </div>
                   <h1 class="u-text u-text-2">Find the right <span class="u-text-custom-color-3">PARTNER&nbsp;</span>for your <span class="u-text-custom-color-3">BRAND</span>!
