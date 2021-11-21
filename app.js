@@ -286,6 +286,14 @@ app.get('/companyFilter', checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/CompaniesSearchFilter.ejs"));
 });
 
+app.get('/profile', checkIfAuthenticated, (req, res)=>{
+    if (req.role.toUpperCase() ==="INFLUENCER"){
+        res.redirect(`/profile/${req.uid}`);
+    }else if (req.role.toUpperCase() ==="EMPLOYER"){
+        res.redirect(`/companyProfile/${req.uid}`);
+    }
+})
+
 app.get('/profile/:id', checkIfAuthenticated, async (req, res) => {
     // console.log(req.params);
     let uid = req.params.id;
