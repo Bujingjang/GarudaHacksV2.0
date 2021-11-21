@@ -251,3 +251,4 @@ app.get('/searchResult/:genre/:location', checkIfAuthenticated, async (req, res)
 app.listen(8080,()=>{
     console.log("Connected to server");
 });
+//test
