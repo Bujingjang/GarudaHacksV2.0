@@ -6,7 +6,7 @@ const firebaseAdmin = require("firebase-admin");
 const firebase = require("firebase/app");
 const firebaseAuth = require("firebase/auth");
 const firebaseService = require("firebase-service");
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-adbd36d8f6.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-c79c219345.json");
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -107,7 +107,7 @@ app.get('/login',(req,res)=>{
 
 app.get('/influencer',(req,res)=>{
     res.render(path.join(__dirname,"./views/Influencers.ejs"))
-})
+});
 
 // Showing Influencer Profile Page View
 app.get('/infProfPageView', (req, res) => {
@@ -198,15 +198,15 @@ app.post('/influencerResult',(req, res)=>{
     console.log(req.body);
     const genre = req.body["market-select"];
     const location = req.body["location-select"];
-    res.render(path.join(__dirname, "views/InfluencerSearchFilter.ejs"));
+    res.redirect(301, `/searchResult/${genre}/${location}`);
     //res.redirect("/searchResult/" +genre + "/" + location);
-})
+});
 
 app.get('/searchResult/:genre/:location', (req, res) => {
     console.log("genre: " + req.params.genre);
     console.log("location: " + req.params.location);
     res.render(path.join(__dirname, "views/InfluencerSearchFilter.ejs"));
-})
+});
 
 app.listen(8080,()=>{
     console.log("Connected to server");
