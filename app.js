@@ -53,7 +53,6 @@ auth.onAuthStateChanged( user => {
 // }
     
 
-//still not done
 const getAuthToken = (req, res, next) => {
     if (
         req.headers.authorization &&
@@ -65,30 +64,13 @@ const getAuthToken = (req, res, next) => {
     }
     next();
 };
-//still not done
+
 const checkIfAuthenticated = (req, res, next) => {
     getAuthToken(req, res, async () => {
         return auth.currentUser?next():res
         .status(401)
         .send({ error: 'You are not authorized to make this request' });
     });
-    //   try {
-    //     console.log("CHECKING");
-    //     console.log(auth.currentUser);
-    //     const { authToken } = await auth.currentUser.getIdToken();
-    //     console.log(authToken);
-        
-    //     const userInfo = await firebaseService.admin
-    //       .auth()
-    //       .verifyIdToken(authToken);
-    //     req.authId = userInfo.uid;
-    //     return next();
-    //   } catch (e) {
-    //     return res
-    //       .status(401)
-    //       .send({ error: 'You are not authorized to make this request' });
-    //   }
-    // });
 };
 
 
@@ -105,8 +87,8 @@ app.get('/login',(req,res)=>{
     res.render(path.join(__dirname,"./views/Login.ejs"), {error:''});
 });
 
-app.get('/influencer',(req,res)=>{
-    res.render(path.join(__dirname,"./views/Influencers.ejs"))
+app.get('/influencer/:id', checkIfAuthenticated, (req,res)=>{
+    res.render(path.join(__dirname,"./views/Influencers.ejs"));
 });
 
 app.get('influencerFilter', (req, res)=> {
@@ -142,7 +124,6 @@ app.post('/register-influencer', async (req, res) => {
         birthdate,
         phoneNumber
     } = req.body;
-    console.log(req.body);
     const user = await firebaseAdmin.auth().createUser({
         email,
         password,
@@ -163,7 +144,6 @@ app.post('/register-influencer', async (req, res) => {
         "phoneNumber":phoneNumber,
         "role" : "influencer"
     };
-    console.log(userInfo);
     const newDoc = await db.collection("users").doc(user.uid).set(userInfo).catch((err)=>{
         res.render(path.join(__dirname, "views/signUpInfluencer.ejs"), {error: err});
     });
@@ -204,11 +184,10 @@ app.post('/login', async (req, res) => {
             res.redirect("/");
         }
     }
-    
 });
 
 app.get('/register-employer', function(req, res) {
-    res.render(path.join(__dirname, "views/register.ejs"));
+    res.render(path.join(__dirname, "views/signUpEmployer.ejs"), {error:""});
 });
 
 app.get('/home', checkIfAuthenticated, function(req, res) {
