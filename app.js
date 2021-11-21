@@ -7,7 +7,7 @@ const firebase = require("firebase/app");
 const firebaseAuth = require("firebase/auth");
 const firebaseService = require("firebase-service");
 
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-d281b20125.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-c79c219345.json");
 
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
@@ -147,20 +147,26 @@ app.post('/login', async (req, res) => {
     console.log(req.body);
     const user = await firebaseAuth.signInWithEmailAndPassword(auth, email, password).catch(
         (err) => {
-            console.log(err)
-            console.log("LOGIN FAILED");
+            console.log(err);
             res.render(path.join(__dirname,"views/Login.ejs"), {error: err});
         });
     var uid = user.user.uid;
     console.log(uid, "LOGIN SUCCESSFUL");
     const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
-    const role = userRef.data().role;
+    const employerRef = await db.collection('employers').doc(uid).get().catch(err => console.log(err));
+    let role;
+    if (userRef.data()) {
+        role = userRef.data().role;
+    }
+    if (employerRef.data()) {
+        role = employerRef.data().role;
+    }
     if (role) {
         if (role.toUpperCase()=="INFLUENCER") {
             res.redirect(301, `/profile/${uid}`);
         }  
         if (role.toUpperCase()=="COMPANY") {
-            res.redirect(301, "/");
+            res.redirect(301, `/companyProfile/${uid}`);
         }
     } else {
         res.render(path.join(__dirname,"views/Login.ejs"), {error: "This user does not have a role"});
@@ -247,8 +253,11 @@ app.get('/profile/:id', checkIfAuthenticated, async (req, res) => {
     let uid = req.params.id;
     let snapshot = await db.collection("users").doc(uid).get().catch(err => console.log(err));
     let profile = snapshot.data();
-    // let name = await db.collection("users").doc(auth.currentUser.user.uid).get("displayName").catch(err => console.log(err));
     res.render(path.join(__dirname, "views/influencerProfilePageView.ejs"), {profile:profile});
+});
+
+app.get('/companyProfile/:id', checkIfAuthenticated, async(req,res) => {
+    res.render(path.join(__dirname, "views/companyProfilePageView.ejs"));
 });
 
 app.post('/influencerResult', checkIfAuthenticated, (req, res)=>{
