@@ -6,9 +6,10 @@ const firebaseAdmin = require("firebase-admin");
 const firebase = require("firebase/app");
 const firebaseAuth = require("firebase/auth");
 const firebaseService = require("firebase-service");
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-c79c219345.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-adbd36d8f6.json");
 
-app.set('view engine', 'ejs');
+app.engine("html", require("ejs").renderFile);
+app.set("view engine", "html");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("images"));
@@ -155,7 +156,7 @@ app.post('/login', async (req, res) => {
     const role = userRef.data().role;
     if (role) {
         if (role.toUpperCase()=="INFLUENCER") {
-            res.redirect(301, `influencer/${uid}`);
+            res.redirect(301, "/influencer");
         }  
         if (role.toUpperCase()=="COMPANY") {
             res.redirect(301, "/");
@@ -217,9 +218,9 @@ app.get('/profile/:id', checkIfAuthenticated, async (req, res) => {
     let uid = req.params.id;
     let snapshot = await db.collection("users").doc(uid).get().catch(err => console.log(err));
     let profile = snapshot.data();
-    // console.log(profile);
+    console.log(profile);
     // let name = await db.collection("users").doc(auth.currentUser.user.uid).get("displayName").catch(err => console.log(err));
-    res.render(path.join(__dirname, "views/profilePage.ejs"), {profile:profile});
+    res.render(path.join(__dirname, "views/influencerProfilePageView.ejs"), {profile:profile});
 });
 
 app.post('/influencerResult', checkIfAuthenticated, (req, res)=>{
