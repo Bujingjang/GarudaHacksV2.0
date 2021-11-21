@@ -6,7 +6,8 @@ const firebaseAdmin = require("firebase-admin");
 const firebase = require("firebase/app");
 const firebaseAuth = require("firebase/auth");
 const firebaseService = require("firebase-service");
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-c79c219345.json");
+
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-d281b20125.json");
 
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
@@ -234,6 +235,11 @@ app.get('/ComProfPageView', checkIfAuthenticated, (req, res) => {
 // Showing Company Profile Page Edit
 app.get('/ComProfPageEdit', checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/companyProfilePageEdit.ejs"));
+});
+
+// Showing searches to find companies
+app.get('/companies', checkIfAuthenticated, (req, res) => {
+    res.render(path.join(__dirname,"./views/Companies.ejs"));
 });
 
 app.get('/profile/:id', checkIfAuthenticated, async (req, res) => {
