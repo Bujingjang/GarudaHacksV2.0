@@ -7,7 +7,7 @@ const firebase = require("firebase/app");
 const firebaseAuth = require("firebase/auth");
 const firebaseService = require("firebase-service");
 
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-d281b20125.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-adbd36d8f6.json");
 
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
@@ -17,6 +17,10 @@ app.use(express.static("images"));
 app.use(express.static("styles"));
 app.use(express.static("views"));
 app.use(express.static(__dirname + '/public'));
+
+//uid of the user
+let uid;
+let role;
 
 firebaseAdmin.initializeApp({
     credential: firebaseAdmin.credential.cert(serviceAccount),
@@ -77,6 +81,11 @@ const getAuthToken = (req, res, next) => {
 
 const checkIfAuthenticated = (req, res, next) => {
     getAuthToken(req, res, async () => {
+        const uid = auth.currentUser.uid;
+        const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
+        req.role = userRef.data().role;
+        req.uid = uid;
+        //req.role = 
         return auth.currentUser?next():res
         .status(401)
         .send({ error: 'You are not authorized to make this request' });
@@ -151,16 +160,16 @@ app.post('/login', async (req, res) => {
             console.log("LOGIN FAILED");
             res.render(path.join(__dirname,"views/Login.ejs"), {error: err});
         });
-    var uid = user.user.uid;
+    uid = user.user.uid;
     console.log(uid, "LOGIN SUCCESSFUL");
     const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
-    const role = userRef.data().role;
+    role = userRef.data().role;
     if (role) {
         if (role.toUpperCase()=="INFLUENCER") {
-            res.redirect(301, `/profile/${uid}`);
+            res.redirect(301, `/profile/INFLUENCER/${uid}`);
         }  
         if (role.toUpperCase()=="COMPANY") {
-            res.redirect(301, "/");
+            res.redirect(301, `/profile/COMPANY/${uid}`);
         }
     } else {
         res.render(path.join(__dirname,"views/Login.ejs"), {error: "This user does not have a role"});
@@ -210,6 +219,8 @@ app.post('/register-employer', async(req, res) => {
 });
 
 app.get('/influencer', checkIfAuthenticated, (req,res)=>{
+    console.log(req.role);
+    console.log(req.uid);
     res.render(path.join(__dirname,"./views/Influencers.ejs"));
 });
 
@@ -217,9 +228,21 @@ app.get('/influencerFilter', checkIfAuthenticated, (req, res)=> {
     res.render(path.join(__dirname,"./views/InfluencerSearchFilter.ejs"));
 });
 
+app.get('/profile', checkIfAuthenticated, (req, res)=>{
+    if (req.role ==="INFLUENCER"){
+        res.redirect(`/profile/INFLUENCER/${req.uid}`);
+    }else if (req.role ==="COMPANY"){
+        res.redirect(`/profile/COMPANY/${req.uid}`);
+    }
+})
+
 // Showing Influencer Profile Page View
 app.get('/infProfPageView', checkIfAuthenticated, (req, res) => {
-    res.render(path.join(__dirname,"./views/influencerProfilePageView.ejs"));
+    // const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
+    // const role = userRef.data();
+    // console.log(profile);
+    // res.render(path.join(__dirname,"./views/influencerProfilePageView.ejs", {}));
+    res.redirect('/profile/'+req.uid);
 });
 
 // Showing Influencer Profile Page Edit
@@ -228,27 +251,32 @@ app.get('/infProfPageEdit',checkIfAuthenticated, (req, res) => {
 });
 
 // Showing Company Profile Page View
-app.get('/ComProfPageView', checkIfAuthenticated, (req, res) => {
+app.get('/comProfPageView',checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/companyProfilePageView.ejs"));
 });
 
 // Showing Company Profile Page Edit
-app.get('/ComProfPageEdit', checkIfAuthenticated, (req, res) => {
+app.get('/comProfPageEdit',checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/companyProfilePageEdit.ejs"));
 });
 
 // Showing searches to find companies
-app.get('/companies', checkIfAuthenticated, (req, res) => {
+app.get('/company', checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/Companies.ejs"));
 });
 
-app.get('/profile/:id', checkIfAuthenticated, async (req, res) => {
+app.get('/profile/:userType/:id', checkIfAuthenticated, async (req, res) => {
     // console.log(req.params);
     let uid = req.params.id;
+    let role = req.params.userType;
     let snapshot = await db.collection("users").doc(uid).get().catch(err => console.log(err));
     let profile = snapshot.data();
     // let name = await db.collection("users").doc(auth.currentUser.user.uid).get("displayName").catch(err => console.log(err));
-    res.render(path.join(__dirname, "views/influencerProfilePageView.ejs"), {profile:profile});
+    if (role === "INFLUENCER"){
+        res.render(path.join(__dirname, "views/influencerProfilePageView.ejs"), {profile:profile});
+    }else{
+        res.render(path.join(__dirname,"views/companyProfilePageView.ejs"),{profile:profile})
+    }
 });
 
 app.post('/influencerResult', checkIfAuthenticated, (req, res)=>{
