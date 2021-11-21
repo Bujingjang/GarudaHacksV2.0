@@ -7,7 +7,7 @@ const firebase = require("firebase/app");
 const firebaseAuth = require("firebase/auth");
 const firebaseService = require("firebase-service");
 
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-adbd36d8f6.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-d281b20125.json");
 
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
