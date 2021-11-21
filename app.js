@@ -194,6 +194,20 @@ app.get('/profile', checkIfAuthenticated, function(req, res) {
     res.render(path.join(__dirname, "views/profilePage.ejs"));
 });
 
+app.post('/influencerResult',(req, res)=>{
+    console.log(req.body);
+    const genre = req.body["market-select"];
+    const location = req.body["location-select"];
+    res.render(path.join(__dirname, "views/InfluencerSearchFilter.ejs"));
+    //res.redirect("/searchResult/" +genre + "/" + location);
+})
+
+app.get('/searchResult/:genre/:location', (req, res) => {
+    console.log("genre: " + req.params.genre);
+    console.log("location: " + req.params.location);
+    res.render(path.join(__dirname, "views/InfluencerSearchFilter.ejs"));
+})
+
 app.listen(8080,()=>{
     console.log("Connected to server");
 });
