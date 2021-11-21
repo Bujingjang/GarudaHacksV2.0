@@ -7,6 +7,7 @@ Our Idea is that companies can find influencers based on their locations and tar
 to run our program, simply run these commands in order: 
 
 npm install 
+
 node app.js 
 
 and then you can run the website on your browser using your local device by typing: 
