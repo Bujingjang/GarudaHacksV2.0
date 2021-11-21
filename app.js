@@ -44,14 +44,22 @@ auth.onAuthStateChanged( user => {
     }
 });
 
-// const getArticles = async () => {
-//     const token = await auth.currentUser.getIdToken();
-    
-//     return axios.get('https://your-api-url/articles', {headers:  
-//       { authorization: `Bearer ${token}` }})
-//       .then(res => res.data);
-// }
-    
+const actionCodeSettings = {
+    // URL you want to redirect back to. The domain (www.example.com) for this
+    // URL must be in the authorized domains list in the Firebase Console.
+    url: 'https://www.example.com/finishSignUp?cartId=1234',
+    // This must be true.
+    handleCodeInApp: true,
+    iOS: {
+      bundleId: 'com.example.ios'
+    },
+    android: {
+      packageName: 'com.example.android',
+      installApp: true,
+      minimumVersion: '12'
+    },
+    dynamicLinkDomain: 'example.page.link'
+};
 
 const getAuthToken = (req, res, next) => {
     if (
@@ -87,34 +95,6 @@ app.get('/login',(req,res)=>{
     res.render(path.join(__dirname,"./views/Login.ejs"), {error:''});
 });
 
-app.get('/influencer/:id', checkIfAuthenticated, (req,res)=>{
-    res.render(path.join(__dirname,"./views/Influencers.ejs"));
-});
-
-app.get('influencerFilter', (req, res)=> {
-    res.render(path.join(__dirname,"./views/InfluencerSearchFilter.ejs"));
-});
-
-// Showing Influencer Profile Page View
-app.get('/infProfPageView', (req, res) => {
-    res.render(path.join(__dirname,"./views/influencerProfilePageView.ejs"));
-});
-
-// Showing Influencer Profile Page Edit
-app.get('/infProfPageEdit', (req, res) => {
-    res.render(path.join(__dirname,"./views/influencerProfilePageEdit.ejs"));
-});
-
-// Showing Company Profile Page View
-app.get('/ComProfPageView', (req, res) => {
-    res.render(path.join(__dirname,"./views/companyProfilePageView.ejs"));
-});
-
-// Showing Company Profile Page Edit
-app.get('/ComProfPageEdit', (req, res) => {
-    res.render(path.join(__dirname,"./views/companyProfilePageEdit.ejs"));
-});
-
 app.post('/register-influencer', async (req, res) => {
     console.log("posted data for registering influencers");
     const {
@@ -141,6 +121,7 @@ app.post('/register-influencer', async (req, res) => {
         "birthdate":birthdate,
         "phoneNumber":phoneNumber
     };
+    
     const newDoc = await db.collection("users").doc(user.uid).set(userInfo).catch((err)=>{
         res.render(path.join(__dirname, "views/signUpInfluencer.ejs"), {error: err});
     });
@@ -173,15 +154,45 @@ app.get('/register-employer', function(req, res) {
     res.render(path.join(__dirname, "views/signUpEmployer.ejs"), {error:""});
 });
 
-app.get('/home', checkIfAuthenticated, function(req, res) {
-    res.render(path.join(__dirname, "views/Home.ejs"));
+app.get('/influencer/:id', checkIfAuthenticated, (req,res)=>{
+    res.render(path.join(__dirname,"./views/Influencers.ejs"));
 });
 
-app.get('/profile', checkIfAuthenticated, function(req, res) {
-    res.render(path.join(__dirname, "views/profilePage.ejs"));
+app.get('influencerFilter', checkIfAuthenticated, (req, res)=> {
+    res.render(path.join(__dirname,"./views/InfluencerSearchFilter.ejs"));
 });
 
-app.post('/influencerResult',(req, res)=>{
+// Showing Influencer Profile Page View
+app.get('/infProfPageView', checkIfAuthenticated, (req, res) => {
+    res.render(path.join(__dirname,"./views/influencerProfilePageView.ejs"));
+});
+
+// Showing Influencer Profile Page Edit
+app.get('/infProfPageEdit',checkIfAuthenticated, (req, res) => {
+    res.render(path.join(__dirname,"./views/influencerProfilePageEdit.ejs"));
+});
+
+// Showing Company Profile Page View
+app.get('/ComProfPageView', checkIfAuthenticated, (req, res) => {
+    res.render(path.join(__dirname,"./views/companyProfilePageView.ejs"));
+});
+
+// Showing Company Profile Page Edit
+app.get('/ComProfPageEdit', checkIfAuthenticated, (req, res) => {
+    res.render(path.join(__dirname,"./views/companyProfilePageEdit.ejs"));
+});
+
+app.get('/profile/:id', checkIfAuthenticated, async (req, res) => {
+    // console.log(req.params);
+    let uid = req.params.id;
+    let snapshot = await db.collection("users").doc(uid).get().catch(err => console.log(err));
+    let profile = snapshot.data();
+    // console.log(profile);
+    // let name = await db.collection("users").doc(auth.currentUser.user.uid).get("displayName").catch(err => console.log(err));
+    res.render(path.join(__dirname, "views/profilePage.ejs"), {profile:profile});
+});
+
+app.post('/influencerResult', checkIfAuthenticated, (req, res)=>{
     console.log(req.body);
     const genre = req.body["market-select"];
     const location = req.body["location-select"];
@@ -189,10 +200,21 @@ app.post('/influencerResult',(req, res)=>{
     //res.redirect("/searchResult/" +genre + "/" + location);
 });
 
-app.get('/searchResult/:genre/:location', (req, res) => {
-    console.log("genre: " + req.params.genre);
-    console.log("location: " + req.params.location);
-    res.render(path.join(__dirname, "views/InfluencerSearchFilter.ejs"));
+app.get('/searchResult/:genre/:location', checkIfAuthenticated, async (req, res) => {
+    let snapshot = await db.collection("users").get().catch(err => console.log(err));
+    let influencers = [];
+    // for (let snap of snapshot) {
+    //     let id = snap.id;
+    //     influencers.push({
+    //         id: snap.data()
+    //     });
+    // }
+    snapshot.forEach(doc => {
+        let influencer = {...doc.data(), id: doc.id};
+        influencers.push(influencer);
+    });
+    console.log(influencers);
+    res.render(path.join(__dirname, "views/InfluencerSearchFilter.ejs"), {influencers: influencers});
 });
 
 app.listen(8080,()=>{

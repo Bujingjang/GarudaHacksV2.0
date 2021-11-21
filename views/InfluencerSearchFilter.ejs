@@ -123,57 +123,27 @@
         </div>
         <h3 class="u-custom-font u-text u-text-default u-text-3">Search results:<span class="u-text-custom-color-2"></span>
         </h3>
-        <div class="u-container-style u-custom-color-1 u-group u-radius-15 u-shape-round u-group-1">
-          <div class="u-container-layout u-container-layout-1">
-            <img class="u-image u-image-round u-preserve-proportions u-radius-10 u-image-1" src="../../images/558117816-0.png" alt="" data-image-width="150" data-image-height="150">
-            <div class="u-container-style u-group u-group-2">
-              <div class="u-container-layout">
-                <h3 class="u-custom-font u-text u-text-default u-text-4">Name&nbsp; &nbsp; :</h3>
-                <h3 class="u-custom-font u-text u-text-5">John Doe</h3>
-                <h3 class="u-custom-font u-text u-text-6">Market&nbsp; &nbsp; :</h3>
-                <h3 class="u-custom-font u-text u-text-7">Technology</h3>
-                <h3 class="u-custom-font u-text u-text-8">Miami, FL</h3>
-                <h3 class="u-custom-font u-text u-text-9">Location:</h3>
-                <h3 class="u-custom-font u-text u-text-10">Followers:</h3>
-                <h3 class="u-custom-font u-text u-text-11">20K</h3>
+        <% for (let influencer of influencers) { %>
+          <a href="../../profile/<%=influencer.id%>">
+            <div class="u-container-style u-custom-color-1 u-group u-radius-15 u-shape-round u-group-5">
+              <div class="u-container-layout u-container-layout-5">
+                <img class="u-image u-image-round u-preserve-proportions u-radius-10 u-image-3" src="../images/558117816-01.png" alt="" data-image-width="1000" data-image-height="1000">
+                <div class="u-container-style u-group u-group-6">
+                  <div class="u-container-layout">
+                    <h3 class="u-custom-font u-text u-text-default u-text-20">Name&nbsp; &nbsp; :</h3>
+                    <h3 class="u-custom-font u-text u-text-21"><%= influencer.displayName %> </h3>
+                    <h3 class="u-custom-font u-text u-text-default u-text-22">Market&nbsp; &nbsp; :</h3>
+                    <h3 class="u-custom-font u-text u-text-23">Environment</h3>
+                    <h3 class="u-custom-font u-text u-text-24">Miami, FL</h3>
+                    <h3 class="u-custom-font u-text u-text-25">Location:</h3>
+                    <h3 class="u-custom-font u-text u-text-default u-text-26">Followers:</h3>
+                    <h3 class="u-custom-font u-text u-text-27">10K</h3>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="u-container-style u-custom-color-1 u-group u-radius-15 u-shape-round u-group-3">
-          <div class="u-container-layout u-container-layout-3">
-            <img class="u-image u-image-round u-preserve-proportions u-radius-10 u-image-2" src="../../images/558117816-01.png" alt="" data-image-width="1000" data-image-height="1000">
-            <div class="u-container-style u-group u-group-4">
-              <div class="u-container-layout">
-                <h3 class="u-custom-font u-text u-text-default u-text-12">Name&nbsp; &nbsp; :</h3>
-                <h3 class="u-custom-font u-text u-text-13">Jane Doe</h3>
-                <h3 class="u-custom-font u-text u-text-default u-text-14">Market&nbsp; &nbsp; :</h3>
-                <h3 class="u-custom-font u-text u-text-15">Business &amp; Finance</h3>
-                <h3 class="u-custom-font u-text u-text-16">Melbourne, VIC</h3>
-                <h3 class="u-custom-font u-text u-text-17">Location:</h3>
-                <h3 class="u-custom-font u-text u-text-default u-text-18">Followers:</h3>
-                <h3 class="u-custom-font u-text u-text-19">120K</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="u-container-style u-custom-color-1 u-group u-radius-15 u-shape-round u-group-5">
-          <div class="u-container-layout u-container-layout-5">
-            <img class="u-image u-image-round u-preserve-proportions u-radius-10 u-image-3" src="../images/558117816-01.png" alt="" data-image-width="1000" data-image-height="1000">
-            <div class="u-container-style u-group u-group-6">
-              <div class="u-container-layout">
-                <h3 class="u-custom-font u-text u-text-default u-text-20">Name&nbsp; &nbsp; :</h3>
-                <h3 class="u-custom-font u-text u-text-21">Jane Doe</h3>
-                <h3 class="u-custom-font u-text u-text-default u-text-22">Market&nbsp; &nbsp; :</h3>
-                <h3 class="u-custom-font u-text u-text-23">Environment</h3>
-                <h3 class="u-custom-font u-text u-text-24">Miami, FL</h3>
-                <h3 class="u-custom-font u-text u-text-25">Location:</h3>
-                <h3 class="u-custom-font u-text u-text-default u-text-26">Followers:</h3>
-                <h3 class="u-custom-font u-text u-text-27">10K</h3>
-              </div>
-            </div>
-          </div>
-        </div>
+          </a>
+        <% } %>  
       </div>
     </section>
     
