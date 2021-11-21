@@ -81,11 +81,11 @@ const getAuthToken = (req, res, next) => {
 
 const checkIfAuthenticated = (req, res, next) => {
     getAuthToken(req, res, async () => {
-        // const uid = auth.currentUser.uid;
-        // const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
-        // req.role = userRef.data().role;
-        // req.uid = uid;
-        //req.role = 
+        const uid = auth.currentUser.uid;
+        const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
+        req.role = userRef.data().role;
+        req.uid = uid;
+        
         return auth.currentUser?next():res
         .status(401)
         .send({ error: 'You are not authorized to make this request' });
@@ -170,9 +170,10 @@ app.post('/login', async (req, res) => {
     if (employerRef.data()) {
         role = employerRef.data().role;
     }
+    console.log(role);
     if (role) {
         if (role.toUpperCase()=="INFLUENCER") {
-            res.redirect(301, `/profile/INFLUENCER/${uid}`);
+            res.redirect(301, `/profile/${uid}`);
         }  
         if (role.toUpperCase()=="COMPANY") {
             res.redirect(301, `/companyProfile/${uid}`);
@@ -235,10 +236,10 @@ app.get('/influencerFilter', checkIfAuthenticated, (req, res)=> {
 });
 
 app.get('/profile', checkIfAuthenticated, (req, res)=>{
-    if (req.role ==="INFLUENCER"){
-        res.redirect(`/profile/INFLUENCER/${req.uid}`);
-    }else if (req.role ==="COMPANY"){
-        res.redirect(`/profile/COMPANY/${req.uid}`);
+    if (req.role.toUpperCase() ==="INFLUENCER"){
+        res.redirect(`/profile/${req.uid}`);
+    }else if (req.role.toUpperCase() ==="COMPANY"){
+        res.redirect(`/companyProfile/${req.uid}`);
     }
 })
 
@@ -278,15 +279,13 @@ app.get('/companyFilter', checkIfAuthenticated, (req, res) => {
 app.get('/profile/:id', checkIfAuthenticated, async (req, res) => {
     // console.log(req.params);
     let uid = req.params.id;
-    let role = req.params.userType;
+    // let role = req.params.userType;
     let snapshot = await db.collection("users").doc(uid).get().catch(err => console.log(err));
     let profile = snapshot.data();
     // let name = await db.collection("users").doc(auth.currentUser.user.uid).get("displayName").catch(err => console.log(err));
-    if (role === "INFLUENCER"){
-        res.render(path.join(__dirname, "views/influencerProfilePageView.ejs"), {profile:profile});
-    }else{
-        res.render(path.join(__dirname,"views/companyProfilePageView.ejs"),{profile:profile})
-    }
+    
+    res.render(path.join(__dirname, "views/influencerProfilePageView.ejs"), {profile:profile});
+    
 });
 
 app.get('/companyProfile/:id', checkIfAuthenticated, async(req,res) => {
