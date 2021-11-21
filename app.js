@@ -171,11 +171,11 @@ app.get('/register-employer', function(req, res) {
     res.render(path.join(__dirname, "views/signUpEmployer.ejs"), {error:""});
 });
 
-app.get('/influencer/:id', checkIfAuthenticated, (req,res)=>{
+app.get('/influencer', checkIfAuthenticated, (req,res)=>{
     res.render(path.join(__dirname,"./views/Influencers.ejs"));
 });
 
-app.get('influencerFilter', checkIfAuthenticated, (req, res)=> {
+app.get('/influencerFilter', checkIfAuthenticated, (req, res)=> {
     res.render(path.join(__dirname,"./views/InfluencerSearchFilter.ejs"));
 });
 
