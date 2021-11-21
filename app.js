@@ -81,10 +81,10 @@ const getAuthToken = (req, res, next) => {
 
 const checkIfAuthenticated = (req, res, next) => {
     getAuthToken(req, res, async () => {
-        const uid = auth.currentUser.uid;
-        const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
-        req.role = userRef.data().role;
-        req.uid = uid;
+        // const uid = auth.currentUser.uid;
+        // const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
+        // req.role = userRef.data().role;
+        // req.uid = uid;
         //req.role = 
         return auth.currentUser?next():res
         .status(401)
