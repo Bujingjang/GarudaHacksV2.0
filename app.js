@@ -7,7 +7,7 @@ const firebase = require("firebase/app");
 const firebaseAuth = require("firebase/auth");
 const firebaseService = require("firebase-service");
 
-const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-adbd36d8f6.json");
+const serviceAccount = require("./garudahacks-f6ce2-firebase-adminsdk-pq2va-c79c219345.json");
 
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
@@ -92,6 +92,32 @@ const checkIfAuthenticated = (req, res, next) => {
     });
 };
 
+const checkIfAuthenticatedInfluencer = (req, res, next) => {
+    getAuthToken(req, res, async () => {
+        const uid = auth.currentUser.uid;
+        const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
+        // req.role = userRef.data().role;
+        // req.uid = uid;
+        //req.role = 
+        return auth.currentUser&&userRef.data()?next():res
+        .status(401)
+        .send({ error: 'You are not authorized to make this request' });
+    });
+};
+
+const checkIfAuthenticatedEmployer = (req, res, next) => {
+    getAuthToken(req, res, async () => {
+        // const uid = auth.currentUser.uid;
+        // const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
+        // req.role = userRef.data().role;
+        // req.uid = uid;
+        //req.role = 
+        return auth.currentUser?next():res
+        .status(401)
+        .send({ error: 'You are not authorized to make this request' });
+    });
+};
+
 
 app.get('/', function(req, res){
     res.render(path.join(__dirname, "./views/Home.ejs"));
@@ -162,20 +188,12 @@ app.post('/login', async (req, res) => {
     uid = user.user.uid;
     console.log(uid, "LOGIN SUCCESSFUL");
     const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
-    const employerRef = await db.collection('employers').doc(uid).get().catch(err => console.log(err));
-    let role;
-    if (userRef.data()) {
-        role = userRef.data().role;
-    }
-    if (employerRef.data()) {
-        role = employerRef.data().role;
-    }
-    console.log(role);
+    const role = userRef.data().role;
     if (role) {
         if (role.toUpperCase()=="INFLUENCER") {
             res.redirect(301, `/profile/${uid}`);
         }  
-        if (role.toUpperCase()=="COMPANY") {
+        if (role.toUpperCase()=="EMPLOYER") {
             res.redirect(301, `/companyProfile/${uid}`);
         }
     } else {
@@ -206,7 +224,7 @@ app.post('/register-employer', async(req, res) => {
     }).catch(
         (err)=> {
             console.log(err);
-            res.render(path.join(__dirname, "views/signUpInfluencer.ejs"), {error: err});
+            res.render(path.join(__dirname, "views/signUpEmployer.ejs"), {error: err});
         }
     );
     const employerInfo = {
@@ -216,14 +234,21 @@ app.post('/register-employer', async(req, res) => {
         "birthdate":birthdate,
         "phoneNumber":phoneNumber,
         "company": company,
-        "role" : "company"
+        "role" : "employer"
     };
     
-    const newDoc = await db.collection("employers").doc(user.uid).set(employerInfo).catch((err)=>{
+    const newDoc = await db.collection("users").doc(user.uid).set(employerInfo).catch((err)=>{
         res.render(path.join(__dirname, "views/signUpEmployer.ejs"), {error: err});
     });
-    res.redirect("/login");
+
+    // const checkCompany = await db.collection("companies").doc(company).get();
+    // if (!checkCompany.data()) {
+    //     res.redirect(301, "/register-company");
+    // }
+    res.redirect(301, "/login");
 });
+
+// app.get("/register-company")
 
 app.get('/influencer', checkIfAuthenticated, (req,res)=>{
     console.log(req.role);
@@ -234,14 +259,6 @@ app.get('/influencer', checkIfAuthenticated, (req,res)=>{
 app.get('/influencerFilter', checkIfAuthenticated, (req, res)=> {
     res.render(path.join(__dirname,"./views/InfluencerSearchFilter.ejs"));
 });
-
-app.get('/profile', checkIfAuthenticated, (req, res)=>{
-    if (req.role.toUpperCase() ==="INFLUENCER"){
-        res.redirect(`/profile/${req.uid}`);
-    }else if (req.role.toUpperCase() ==="COMPANY"){
-        res.redirect(`/companyProfile/${req.uid}`);
-    }
-})
 
 // Showing Influencer Profile Page View
 app.get('/infProfPageView', checkIfAuthenticated, (req, res) => {
@@ -289,7 +306,9 @@ app.get('/profile/:id', checkIfAuthenticated, async (req, res) => {
 });
 
 app.get('/companyProfile/:id', checkIfAuthenticated, async(req,res) => {
-    res.render(path.join(__dirname, "views/companyProfilePageView.ejs"));
+    let snapshot = await db.collection("users").doc(uid).get().catch(err => console.log(err));
+    let profile = snapshot.data();
+    res.render(path.join(__dirname, "views/companyProfilePageView.ejs"), {profile:profile});
 });
 
 app.post('/influencerResult', checkIfAuthenticated, (req, res)=>{
