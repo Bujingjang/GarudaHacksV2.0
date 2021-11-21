@@ -18,6 +18,10 @@ app.use(express.static("styles"));
 app.use(express.static("views"));
 app.use(express.static(__dirname + '/public'));
 
+//uid of the user
+let uid;
+let role;
+
 firebaseAdmin.initializeApp({
     credential: firebaseAdmin.credential.cert(serviceAccount),
 });
@@ -77,6 +81,11 @@ const getAuthToken = (req, res, next) => {
 
 const checkIfAuthenticated = (req, res, next) => {
     getAuthToken(req, res, async () => {
+        const uid = auth.currentUser.uid;
+        const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
+        req.role = userRef.data().role;
+        req.uid = uid;
+        //req.role = 
         return auth.currentUser?next():res
         .status(401)
         .send({ error: 'You are not authorized to make this request' });
@@ -150,7 +159,7 @@ app.post('/login', async (req, res) => {
             console.log(err);
             res.render(path.join(__dirname,"views/Login.ejs"), {error: err});
         });
-    var uid = user.user.uid;
+    uid = user.user.uid;
     console.log(uid, "LOGIN SUCCESSFUL");
     const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
     const employerRef = await db.collection('employers').doc(uid).get().catch(err => console.log(err));
@@ -163,7 +172,7 @@ app.post('/login', async (req, res) => {
     }
     if (role) {
         if (role.toUpperCase()=="INFLUENCER") {
-            res.redirect(301, `/profile/${uid}`);
+            res.redirect(301, `/profile/INFLUENCER/${uid}`);
         }  
         if (role.toUpperCase()=="COMPANY") {
             res.redirect(301, `/companyProfile/${uid}`);
@@ -216,6 +225,8 @@ app.post('/register-employer', async(req, res) => {
 });
 
 app.get('/influencer', checkIfAuthenticated, (req,res)=>{
+    console.log(req.role);
+    console.log(req.uid);
     res.render(path.join(__dirname,"./views/Influencers.ejs"));
 });
 
@@ -223,9 +234,21 @@ app.get('/influencerFilter', checkIfAuthenticated, (req, res)=> {
     res.render(path.join(__dirname,"./views/InfluencerSearchFilter.ejs"));
 });
 
+app.get('/profile', checkIfAuthenticated, (req, res)=>{
+    if (req.role ==="INFLUENCER"){
+        res.redirect(`/profile/INFLUENCER/${req.uid}`);
+    }else if (req.role ==="COMPANY"){
+        res.redirect(`/profile/COMPANY/${req.uid}`);
+    }
+})
+
 // Showing Influencer Profile Page View
 app.get('/infProfPageView', checkIfAuthenticated, (req, res) => {
-    res.render(path.join(__dirname,"./views/influencerProfilePageView.ejs"));
+    // const userRef = await db.collection('users').doc(uid).get().catch(err => console.log(err));
+    // const role = userRef.data();
+    // console.log(profile);
+    // res.render(path.join(__dirname,"./views/influencerProfilePageView.ejs", {}));
+    res.redirect('/profile/'+req.uid);
 });
 
 // Showing Influencer Profile Page Edit
@@ -234,26 +257,36 @@ app.get('/infProfPageEdit',checkIfAuthenticated, (req, res) => {
 });
 
 // Showing Company Profile Page View
-app.get('/ComProfPageView', checkIfAuthenticated, (req, res) => {
+app.get('/comProfPageView',checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/companyProfilePageView.ejs"));
 });
 
 // Showing Company Profile Page Edit
-app.get('/ComProfPageEdit', checkIfAuthenticated, (req, res) => {
+app.get('/comProfPageEdit',checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/companyProfilePageEdit.ejs"));
 });
 
 // Showing searches to find companies
-app.get('/companies', checkIfAuthenticated, (req, res) => {
+app.get('/company', checkIfAuthenticated, (req, res) => {
     res.render(path.join(__dirname,"./views/Companies.ejs"));
+});
+
+app.get('/companyFilter', checkIfAuthenticated, (req, res) => {
+    res.render(path.join(__dirname,"./views/CompaniesSearchFilter.ejs"));
 });
 
 app.get('/profile/:id', checkIfAuthenticated, async (req, res) => {
     // console.log(req.params);
     let uid = req.params.id;
+    let role = req.params.userType;
     let snapshot = await db.collection("users").doc(uid).get().catch(err => console.log(err));
     let profile = snapshot.data();
-    res.render(path.join(__dirname, "views/influencerProfilePageView.ejs"), {profile:profile});
+    // let name = await db.collection("users").doc(auth.currentUser.user.uid).get("displayName").catch(err => console.log(err));
+    if (role === "INFLUENCER"){
+        res.render(path.join(__dirname, "views/influencerProfilePageView.ejs"), {profile:profile});
+    }else{
+        res.render(path.join(__dirname,"views/companyProfilePageView.ejs"),{profile:profile})
+    }
 });
 
 app.get('/companyProfile/:id', checkIfAuthenticated, async(req,res) => {
@@ -268,6 +301,14 @@ app.post('/influencerResult', checkIfAuthenticated, (req, res)=>{
     //res.redirect("/searchResult/" +genre + "/" + location);
 });
 
+app.post('/companyResult', checkIfAuthenticated, (req, res)=>{
+    console.log(req.body);
+    const genre = req.body["market-select"];
+    const location = req.body["location-select"];
+    res.redirect(301, `/companySearchResult/${genre}/${location}`);
+    //res.redirect("/searchResult/" +genre + "/" + location);
+});
+
 app.get('/searchResult/:genre/:location', checkIfAuthenticated, async (req, res) => {
     let snapshot = await db.collection("users").get().catch(err => console.log(err));
     let influencers = [];
@@ -277,6 +318,17 @@ app.get('/searchResult/:genre/:location', checkIfAuthenticated, async (req, res)
     });
     console.log(influencers);
     res.render(path.join(__dirname, "views/InfluencerSearchFilter.ejs"), {influencers: influencers});
+});
+
+app.get('/companySearchResult/:genre/:location', checkIfAuthenticated, async (req, res) => {
+    let snapshot = await db.collection("users").get().catch(err => console.log(err));
+    let companies = [];
+    snapshot.forEach(doc => {
+        let company = {...doc.data(), id: doc.id};
+        companies.push(company);
+    });
+    console.log(companies);
+    res.render(path.join(__dirname, "views/CompaniesSearchFilter.ejs"), {companies: companies});
 });
 
 app.listen(8080,()=>{
