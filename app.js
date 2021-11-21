@@ -156,7 +156,7 @@ app.post('/login', async (req, res) => {
     const role = userRef.data().role;
     if (role) {
         if (role.toUpperCase()=="INFLUENCER") {
-            res.redirect(301, "/influencer");
+            res.redirect(301, `/profile/${uid}`);
         }  
         if (role.toUpperCase()=="COMPANY") {
             res.redirect(301, "/");
